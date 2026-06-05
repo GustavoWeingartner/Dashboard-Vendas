@@ -1695,6 +1695,7 @@ function App() {
                   data={productChartData}
                   options={horizontalCurrencyOptions()}
                   action={<RankToggle value={rankMode} onChange={setRankMode} />}
+                  pdfHidden
                 />
                 <ChartCard
                   title="Receita por canal"
@@ -2121,7 +2122,7 @@ function DateComparisonSelector({
   ] as Array<[string, number, number, (value: number) => string]>;
 
   return (
-    <section className="comparison-panel">
+    <section className="comparison-panel pdf-skip">
       <div className="section-header">
         <div>
           <h2 className="section-title">Comparação personalizada</h2>
@@ -2195,6 +2196,7 @@ function ChartCard({
   action,
   short = false,
   wide = false,
+  pdfHidden = false,
 }: {
   title: string;
   subtitle: string;
@@ -2204,9 +2206,10 @@ function ChartCard({
   action?: any;
   short?: boolean;
   wide?: boolean;
+  pdfHidden?: boolean;
 }) {
   return (
-    <div className={`chart-card ${wide ? "wide" : ""}`}>
+    <div className={`chart-card ${wide ? "wide" : ""} ${pdfHidden ? "pdf-skip" : ""}`}>
       <div className="chart-title-row">
         <div>
           <h3 className="chart-title">{title}</h3>

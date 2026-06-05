@@ -1484,7 +1484,8 @@ function App() {
     action: /*#__PURE__*/React.createElement(RankToggle, {
       value: rankMode,
       onChange: setRankMode
-    })
+    }),
+    pdfHidden: true
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Receita por canal",
     subtitle: "Distribui\xE7\xE3o de faturamento por origem da venda",
@@ -1944,7 +1945,7 @@ function DateComparisonSelector({
 }) {
   const rows = [["Receita", metricsA.revenue, metricsB.revenue, formatCurrency], ["Pedidos", metricsA.orders, metricsB.orders, formatNumber], ["Unidades", metricsA.units, metricsB.units, formatNumber], ["Ticket médio", metricsA.aov, metricsB.aov, formatCurrency]];
   return /*#__PURE__*/React.createElement("section", {
-    className: "comparison-panel"
+    className: "comparison-panel pdf-skip"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-header"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
@@ -2032,10 +2033,11 @@ function ChartCard({
   options,
   action,
   short = false,
-  wide = false
+  wide = false,
+  pdfHidden = false
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: `chart-card ${wide ? "wide" : ""}`
+    className: `chart-card ${wide ? "wide" : ""} ${pdfHidden ? "pdf-skip" : ""}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "chart-title-row"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {

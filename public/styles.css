@@ -882,8 +882,14 @@ tbody tr:hover {
 }
 
 body.pdf-export-mode .filters-panel,
-body.pdf-export-mode .topbar-actions {
+body.pdf-export-mode .topbar-actions,
+body.pdf-export-mode .pdf-skip {
   display: none;
+}
+
+@page {
+  size: A4 landscape;
+  margin: 8mm;
 }
 
 @media print {
@@ -892,17 +898,21 @@ body.pdf-export-mode .topbar-actions {
     -webkit-print-color-adjust: exact;
   }
 
+  html,
   body {
+    width: 100%;
     background: var(--bg);
   }
 
   .topbar {
     position: static;
     box-shadow: none;
+    border-bottom: 1px solid var(--line);
   }
 
   .topbar-actions,
   .filters-panel,
+  .pdf-skip,
   .alert,
   .loading-state {
     display: none !important;
@@ -916,7 +926,8 @@ body.pdf-export-mode .topbar-actions {
 
   .topbar-inner {
     grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
-    padding: 10px 0 14px;
+    gap: 10mm;
+    padding: 0 0 6mm;
   }
 
   .brand-logos {
@@ -928,20 +939,104 @@ body.pdf-export-mode .topbar-actions {
   }
 
   .content-area {
-    gap: 10px;
+    display: block;
+  }
+
+  .section {
+    display: block;
+    margin-bottom: 5mm;
+  }
+
+  .section-header {
+    margin-bottom: 3mm;
+  }
+
+  .granularity,
+  .segmented {
+    display: none !important;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3mm;
+    margin-bottom: 5mm;
+  }
+
+  .kpi-card {
+    min-height: auto;
+    padding: 3mm;
+  }
+
+  .kpi-value {
+    font-size: 1rem;
+  }
+
+  .chart-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4mm;
+    align-items: stretch;
+    width: 100%;
   }
 
   .chart-card,
   .table-card,
-  .comparison-panel,
   .heatmap-card,
   .kpi-card {
     break-inside: avoid;
+    page-break-inside: avoid;
     box-shadow: none;
   }
 
+  .chart-card {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 84mm;
+    padding: 3.5mm;
+  }
+
+  .chart-card.wide {
+    grid-column: 1 / -1;
+    min-height: 92mm;
+  }
+
   .chart-wrap {
-    height: 280px;
+    height: 62mm;
+  }
+
+  .chart-card.wide .chart-wrap {
+    height: 70mm;
+  }
+
+  .chart-wrap.short {
+    height: 56mm;
+  }
+
+  .chart-title-row {
+    margin-bottom: 2mm;
+  }
+
+  .chart-title {
+    font-size: 0.82rem;
+  }
+
+  .chart-subtitle {
+    font-size: 0.7rem;
+  }
+
+  canvas {
+    max-width: 100% !important;
+  }
+
+  .table-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4mm;
+    margin-top: 5mm;
+  }
+
+  .heatmap-card {
+    margin-top: 5mm;
+    padding: 3.5mm;
   }
 }
 
@@ -1024,5 +1119,31 @@ body.pdf-export-mode .topbar-actions {
 
   .heatmap-value {
     display: none;
+  }
+}
+
+@media print {
+  .main-grid,
+  .topbar-inner {
+    width: 100%;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .chart-grid,
+  .table-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .chart-card.wide {
+    grid-column: 1 / -1 !important;
+  }
+
+  .pdf-skip,
+  .filters-panel,
+  .topbar-actions {
+    display: none !important;
   }
 }
