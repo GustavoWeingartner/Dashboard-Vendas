@@ -20,3 +20,4 @@ await fs.writeFile(
 );
 
 await fs.copyFile("index.html", "public/index.html");
+await fs.copyFile("src/styles.css", "public/styles.css");
