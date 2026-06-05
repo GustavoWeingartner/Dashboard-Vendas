@@ -1360,19 +1360,16 @@ function App() {
     className: "btn",
     onClick: handleGoogleRefresh,
     disabled: loading
-  }, /*#__PURE__*/React.createElement("span", {
-    "aria-hidden": "true"
-  }, "\xE2\u2020\xBB"), "Atualizar"), /*#__PURE__*/React.createElement("button", {
+  }, "Atualizar"), /*#__PURE__*/React.createElement("button", {
     className: "btn",
     onClick: handleExportPdf
-  }, /*#__PURE__*/React.createElement("span", {
-    "aria-hidden": "true"
-  }, "PDF"), "Exportar PDF"), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-primary",
+  }, "Exportar PDF"), /*#__PURE__*/React.createElement("button", {
+    "aria-label": theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro",
+    className: "btn btn-primary btn-icon theme-toggle",
     onClick: () => setTheme(theme === "dark" ? "light" : "dark")
   }, /*#__PURE__*/React.createElement("span", {
     "aria-hidden": "true"
-  }, theme === "dark" ? "Claro" : "Escuro"), theme === "dark" ? "Modo claro" : "Modo escuro")))), /*#__PURE__*/React.createElement("main", {
+  }, theme === "dark" ? "☀" : "☾"))))), /*#__PURE__*/React.createElement("main", {
     className: "main-grid"
   }, /*#__PURE__*/React.createElement(FiltersPanel, {
     filters: filters,

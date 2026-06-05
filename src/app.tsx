@@ -1591,16 +1591,17 @@ function App() {
               {loading ? "Carregando" : error ? "Erro" : "Base ativa"}
             </span>
             <button className="btn" onClick={handleGoogleRefresh} disabled={loading}>
-              <span aria-hidden="true">â†»</span>
               Atualizar
             </button>
             <button className="btn" onClick={handleExportPdf}>
-              <span aria-hidden="true">PDF</span>
               Exportar PDF
             </button>
-            <button className="btn btn-primary" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-              <span aria-hidden="true">{theme === "dark" ? "Claro" : "Escuro"}</span>
-              {theme === "dark" ? "Modo claro" : "Modo escuro"}
+            <button
+              aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}
+              className="btn btn-primary btn-icon theme-toggle"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
             </button>
           </div>
         </div>

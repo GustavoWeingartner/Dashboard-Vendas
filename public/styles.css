@@ -197,6 +197,10 @@ button {
   padding: 0;
 }
 
+.theme-toggle {
+  font-size: 1.05rem;
+}
+
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -298,10 +302,35 @@ button {
   min-height: 38px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--panel);
   color: var(--text);
   padding: 8px 10px;
   outline: none;
+}
+
+[data-theme="dark"] .input,
+[data-theme="dark"] .select,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+[data-theme="dark"] .multi-select,
+[data-theme="dark"] .multi-select summary {
+  background-color: var(--panel-soft);
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+[data-theme="dark"] .input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--muted);
+}
+
+[data-theme="dark"] select option {
+  background: var(--panel-soft);
+  color: var(--text);
+}
+
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.25);
 }
 
 .input:focus,
