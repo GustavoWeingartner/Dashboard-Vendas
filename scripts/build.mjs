@@ -18,3 +18,5 @@ await fs.writeFile(
   `${compiled}\n//# sourceURL=src/app.tsx\n`,
   "utf8",
 );
+
+await fs.copyFile("index.html", "public/index.html");
