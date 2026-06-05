@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const root = resolve(__dirname, "..");
+const staticRoot = resolve(root, "public");
 const port = Number(process.env.PORT || 4173);
 const googleSheetsSpreadsheetId = "1JldFrcw8oaVAWXXhFyJCMVvm_Be9IXju90UAqpzSLXM";
 const googleSheetsGid = "27856229";
@@ -62,16 +63,16 @@ createServer(async (request, response) => {
 
   const decodedPath = decodeURIComponent(requestUrl.pathname);
   const safePath = normalize(decodedPath).replace(/^(\.\.[/\\])+/, "");
-  let filePath = join(root, safePath === "/" ? "index.html" : safePath);
+  let filePath = join(staticRoot, safePath === "/" ? "index.html" : safePath);
 
-  if (!filePath.startsWith(root)) {
+  if (!filePath.startsWith(staticRoot)) {
     response.writeHead(403);
     response.end("Forbidden");
     return;
   }
 
   if (!existsSync(filePath) || statSync(filePath).isDirectory()) {
-    filePath = join(root, "index.html");
+    filePath = join(staticRoot, "index.html");
   }
 
   sendFile(response, filePath);

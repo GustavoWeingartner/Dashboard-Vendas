@@ -156,8 +156,8 @@ type Bucket = {
   orders: Set<string>;
 };
 
-const DASHBOARD_XLSX = "./public/base-dashboard.xlsx";
-const DASHBOARD_CSV = "./public/base-dashboard.csv";
+const DASHBOARD_XLSX = "./base-dashboard.xlsx";
+const DASHBOARD_CSV = "./base-dashboard.csv";
 const GOOGLE_SHEETS_SPREADSHEET_ID = "1JldFrcw8oaVAWXXhFyJCMVvm_Be9IXju90UAqpzSLXM";
 const GOOGLE_SHEETS_GID = "27856229";
 const GOOGLE_SHEETS_SOURCE_LABEL = "Google Sheets - BASE DASHBOARD";
@@ -1202,7 +1202,6 @@ function rangeDescription(start: string, end: string): string {
 }
 
 function App() {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [records, setRecords] = useState<SaleRecord[]>([]);
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [granularity, setGranularity] = useState("day");
@@ -1212,6 +1211,13 @@ function App() {
   const [sourceName, setSourceName] = useState(GOOGLE_SHEETS_SOURCE_LABEL);
   const [dataSourceMode, setDataSourceMode] = useState<DataSourceMode>("google");
   const [lastSyncAt, setLastSyncAt] = useState<Date | null>(null);
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    try {
+      return window.localStorage.getItem("dashboard-theme") === "dark" ? "dark" : "light";
+    } catch {
+      return "light";
+    }
+  });
   const [rankMode, setRankMode] = useState<"best" | "worst">("best");
   const [comparison, setComparison] = useState({
     aStart: "",
@@ -1219,6 +1225,15 @@ function App() {
     bStart: "",
     bEnd: "",
   });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      window.localStorage.setItem("dashboard-theme", theme);
+    } catch {
+      // Theme persistence is optional; the dashboard still works without localStorage.
+    }
+  }, [theme]);
 
   useEffect(() => {
     let mounted = true;
@@ -1316,6 +1331,16 @@ function App() {
     }
   }
 
+  function handleExportPdf() {
+    document.body.classList.add("pdf-export-mode");
+    const cleanup = () => document.body.classList.remove("pdf-export-mode");
+    window.addEventListener("afterprint", cleanup, { once: true });
+    window.setTimeout(() => {
+      window.print();
+      window.setTimeout(cleanup, 1200);
+    }, 50);
+  }
+
   useEffect(() => {
     if (dataSourceMode === "upload") return undefined;
     let disposed = false;
@@ -1387,7 +1412,7 @@ function App() {
         const [product, sku, category] = bucket.name.split("||");
         return { ...bucket, product, sku, category };
       })
-      .sort((a, b) => rankMode === "best" ? b.revenue - a.revenue : a.profit - b.profit),
+      .sort((a, b) => rankMode === "best" ? b.revenue - a.revenue : a.revenue - b.revenue),
     [currentRecords, rankMode],
   );
   const comparisonMetrics = useMemo(() => {
@@ -1465,9 +1490,9 @@ function App() {
     labels: productBuckets.slice(0, 12).map((bucket: any) => bucket.product),
     datasets: [
       {
-        label: rankMode === "best" ? "Receita" : "Lucro",
-        data: productBuckets.slice(0, 12).map((bucket: any) => rankMode === "best" ? bucket.revenue : bucket.profit),
-        backgroundColor: productBuckets.slice(0, 12).map((bucket: any) => bucket.profit >= 0 ? "rgba(5, 150, 105, 0.72)" : "rgba(225, 29, 72, 0.72)"),
+        label: "Receita",
+        data: productBuckets.slice(0, 12).map((bucket: any) => bucket.revenue),
+        backgroundColor: productBuckets.slice(0, 12).map(() => rankMode === "best" ? "rgba(5, 150, 105, 0.72)" : "rgba(225, 29, 72, 0.72)"),
         borderRadius: 6,
       },
     ],
@@ -1550,14 +1575,15 @@ function App() {
       <header className="topbar">
         <div className="topbar-inner">
           <div className="brand-block">
-            <p className="eyebrow">E-commerce e marketplaces</p>
-            <h1 className="brand-title">Sales Dashboard</h1>
+            <h1 className="brand-title">Dashboard - Vendas E-commerce</h1>
             <div className="brand-meta">
-              <span>{sourceName}</span>
-              <span>{formatNumber(records.length)} linhas</span>
-              {dateBounds && <span>{formatShortDate(dateBounds.min)} a {formatShortDate(dateBounds.max)}</span>}
-              {lastSyncAt && <span>Sincronizado {lastSyncAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</span>}
+              {dateBounds && <span>Data do documento: {formatShortDate(dateBounds.min)} a {formatShortDate(dateBounds.max)}</span>}
+              {lastSyncAt && <span>Sincronizado: {lastSyncAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</span>}
             </div>
+          </div>
+          <div className="brand-logos" aria-label="Logotipos Kuanttum e Primebras">
+            <img className="brand-logo kuanttum-logo" src="./assets/logo-kuanttum.png" alt="Kuanttum" />
+            <img className="brand-logo primebras-logo" src="./assets/logo-primebras.png" alt="Primebras" />
           </div>
           <div className="topbar-actions">
             <span className="status-pill">
@@ -1566,19 +1592,16 @@ function App() {
             </span>
             <button className="btn" onClick={handleGoogleRefresh} disabled={loading}>
               <span aria-hidden="true">â†»</span>
-              Atualizar Sheets
+              Atualizar
             </button>
-            <button className="btn btn-primary" onClick={() => fileInputRef.current?.click()}>
-              <span aria-hidden="true">↥</span>
-              Carregar planilha
+            <button className="btn" onClick={handleExportPdf}>
+              <span aria-hidden="true">PDF</span>
+              Exportar PDF
             </button>
-            <input
-              ref={fileInputRef}
-              className="hidden-file"
-              type="file"
-              accept=".xlsx,.xls,.csv"
-              onChange={handleFileChange}
-            />
+            <button className="btn btn-primary" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+              <span aria-hidden="true">{theme === "dark" ? "Claro" : "Escuro"}</span>
+              {theme === "dark" ? "Modo claro" : "Modo escuro"}
+            </button>
           </div>
         </div>
       </header>
@@ -1665,8 +1688,8 @@ function App() {
                   }}
                 />
                 <ChartCard
-                  title={rankMode === "best" ? "Produtos mais vendidos" : "Produtos com pior lucro"}
-                  subtitle="Ranking por receita ou lucro no período atual"
+                  title={rankMode === "best" ? "Produtos mais vendidos" : "Produtos com menor faturamento"}
+                  subtitle="Ranking por receita no período atual"
                   type="bar"
                   data={productChartData}
                   options={horizontalCurrencyOptions()}

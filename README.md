@@ -17,7 +17,7 @@ Spreadsheet ID: 1JldFrcw8oaVAWXXhFyJCMVvm_Be9IXju90UAqpzSLXM
 GID da aba: 27856229
 ```
 
-O app busca o CSV publico do Sheets ao abrir e atualiza automaticamente a cada 5 minutos. O botao `Atualizar Sheets` faz uma nova leitura imediata sem recarregar a pagina.
+O app busca o CSV publico do Sheets ao abrir e atualiza automaticamente a cada 5 minutos. O botao `Atualizar` faz uma nova leitura imediata sem recarregar a pagina.
 
 ## Passo a passo
 
@@ -56,4 +56,23 @@ Depois recompile:
 node scripts/build.mjs
 ```
 
-O upload manual de Excel ou CSV continua disponivel no botao `Carregar planilha`.
+O upload manual foi removido da interface; os arquivos locais permanecem apenas como fallback caso o Google Sheets fique indisponivel.
+
+## Deploy na Vercel
+
+Use estas configuracoes:
+
+```text
+Build Command: npm run build
+Output Directory: public
+```
+
+O comando `npm run build` gera dentro de `public` tudo que a Vercel precisa publicar:
+
+- `index.html`
+- `styles.css`
+- `app.compiled.js`
+- `vendor/`
+- `assets/`
+- `base-dashboard-data.js`
+- fallbacks locais `base-dashboard.csv` e `base-dashboard.xlsx`

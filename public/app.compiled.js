@@ -4,8 +4,8 @@ const {
   useRef,
   useState
 } = React;
-const DASHBOARD_XLSX = "./public/base-dashboard.xlsx";
-const DASHBOARD_CSV = "./public/base-dashboard.csv";
+const DASHBOARD_XLSX = "./base-dashboard.xlsx";
+const DASHBOARD_CSV = "./base-dashboard.csv";
 const GOOGLE_SHEETS_SPREADSHEET_ID = "1JldFrcw8oaVAWXXhFyJCMVvm_Be9IXju90UAqpzSLXM";
 const GOOGLE_SHEETS_GID = "27856229";
 const GOOGLE_SHEETS_SOURCE_LABEL = "Google Sheets - BASE DASHBOARD";
@@ -996,7 +996,6 @@ function rangeDescription(start, end) {
   return `${formatShortDate(startDate)} a ${formatShortDate(endDate)}`;
 }
 function App() {
-  const fileInputRef = useRef(null);
   const [records, setRecords] = useState([]);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [granularity, setGranularity] = useState("day");
@@ -1006,6 +1005,13 @@ function App() {
   const [sourceName, setSourceName] = useState(GOOGLE_SHEETS_SOURCE_LABEL);
   const [dataSourceMode, setDataSourceMode] = useState("google");
   const [lastSyncAt, setLastSyncAt] = useState(null);
+  const [theme, setTheme] = useState(() => {
+    try {
+      return window.localStorage.getItem("dashboard-theme") === "dark" ? "dark" : "light";
+    } catch {
+      return "light";
+    }
+  });
   const [rankMode, setRankMode] = useState("best");
   const [comparison, setComparison] = useState({
     aStart: "",
@@ -1013,6 +1019,14 @@ function App() {
     bStart: "",
     bEnd: ""
   });
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      window.localStorage.setItem("dashboard-theme", theme);
+    } catch {
+      // Theme persistence is optional; the dashboard still works without localStorage.
+    }
+  }, [theme]);
   useEffect(() => {
     let mounted = true;
     setLoading(true);
@@ -1118,6 +1132,17 @@ function App() {
       setLoading(false);
     }
   }
+  function handleExportPdf() {
+    document.body.classList.add("pdf-export-mode");
+    const cleanup = () => document.body.classList.remove("pdf-export-mode");
+    window.addEventListener("afterprint", cleanup, {
+      once: true
+    });
+    window.setTimeout(() => {
+      window.print();
+      window.setTimeout(cleanup, 1200);
+    }, 50);
+  }
   useEffect(() => {
     if (dataSourceMode === "upload") return undefined;
     let disposed = false;
@@ -1176,7 +1201,7 @@ function App() {
       sku,
       category
     };
-  }).sort((a, b) => rankMode === "best" ? b.revenue - a.revenue : a.profit - b.profit), [currentRecords, rankMode]);
+  }).sort((a, b) => rankMode === "best" ? b.revenue - a.revenue : a.revenue - b.revenue), [currentRecords, rankMode]);
   const comparisonMetrics = useMemo(() => {
     const a = calcMetrics(filterByDate(dimensionFiltered, comparison.aStart, comparison.aEnd));
     const b = calcMetrics(filterByDate(dimensionFiltered, comparison.bStart, comparison.bEnd));
@@ -1237,9 +1262,9 @@ function App() {
   const productChartData = {
     labels: productBuckets.slice(0, 12).map(bucket => bucket.product),
     datasets: [{
-      label: rankMode === "best" ? "Receita" : "Lucro",
-      data: productBuckets.slice(0, 12).map(bucket => rankMode === "best" ? bucket.revenue : bucket.profit),
-      backgroundColor: productBuckets.slice(0, 12).map(bucket => bucket.profit >= 0 ? "rgba(5, 150, 105, 0.72)" : "rgba(225, 29, 72, 0.72)"),
+      label: "Receita",
+      data: productBuckets.slice(0, 12).map(bucket => bucket.revenue),
+      backgroundColor: productBuckets.slice(0, 12).map(() => rankMode === "best" ? "rgba(5, 150, 105, 0.72)" : "rgba(225, 29, 72, 0.72)"),
       borderRadius: 6
     }]
   };
@@ -1307,16 +1332,25 @@ function App() {
     className: "topbar-inner"
   }, /*#__PURE__*/React.createElement("div", {
     className: "brand-block"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "eyebrow"
-  }, "E-commerce e marketplaces"), /*#__PURE__*/React.createElement("h1", {
+  }, /*#__PURE__*/React.createElement("h1", {
     className: "brand-title"
-  }, "Sales Dashboard"), /*#__PURE__*/React.createElement("div", {
+  }, "Dashboard - Vendas E-commerce"), /*#__PURE__*/React.createElement("div", {
     className: "brand-meta"
-  }, /*#__PURE__*/React.createElement("span", null, sourceName), /*#__PURE__*/React.createElement("span", null, formatNumber(records.length), " linhas"), dateBounds && /*#__PURE__*/React.createElement("span", null, formatShortDate(dateBounds.min), " a ", formatShortDate(dateBounds.max)), lastSyncAt && /*#__PURE__*/React.createElement("span", null, "Sincronizado ", lastSyncAt.toLocaleTimeString("pt-BR", {
+  }, dateBounds && /*#__PURE__*/React.createElement("span", null, "Data do documento: ", formatShortDate(dateBounds.min), " a ", formatShortDate(dateBounds.max)), lastSyncAt && /*#__PURE__*/React.createElement("span", null, "Sincronizado: ", lastSyncAt.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit"
   })))), /*#__PURE__*/React.createElement("div", {
+    className: "brand-logos",
+    "aria-label": "Logotipos Kuanttum e Primebras"
+  }, /*#__PURE__*/React.createElement("img", {
+    className: "brand-logo kuanttum-logo",
+    src: "./assets/logo-kuanttum.png",
+    alt: "Kuanttum"
+  }), /*#__PURE__*/React.createElement("img", {
+    className: "brand-logo primebras-logo",
+    src: "./assets/logo-primebras.png",
+    alt: "Primebras"
+  })), /*#__PURE__*/React.createElement("div", {
     className: "topbar-actions"
   }, /*#__PURE__*/React.createElement("span", {
     className: "status-pill"
@@ -1328,18 +1362,17 @@ function App() {
     disabled: loading
   }, /*#__PURE__*/React.createElement("span", {
     "aria-hidden": "true"
-  }, "\xE2\u2020\xBB"), "Atualizar Sheets"), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-primary",
-    onClick: () => fileInputRef.current?.click()
+  }, "\xE2\u2020\xBB"), "Atualizar"), /*#__PURE__*/React.createElement("button", {
+    className: "btn",
+    onClick: handleExportPdf
   }, /*#__PURE__*/React.createElement("span", {
     "aria-hidden": "true"
-  }, "\u21A5"), "Carregar planilha"), /*#__PURE__*/React.createElement("input", {
-    ref: fileInputRef,
-    className: "hidden-file",
-    type: "file",
-    accept: ".xlsx,.xls,.csv",
-    onChange: handleFileChange
-  })))), /*#__PURE__*/React.createElement("main", {
+  }, "PDF"), "Exportar PDF"), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: () => setTheme(theme === "dark" ? "light" : "dark")
+  }, /*#__PURE__*/React.createElement("span", {
+    "aria-hidden": "true"
+  }, theme === "dark" ? "Claro" : "Escuro"), theme === "dark" ? "Modo claro" : "Modo escuro")))), /*#__PURE__*/React.createElement("main", {
     className: "main-grid"
   }, /*#__PURE__*/React.createElement(FiltersPanel, {
     filters: filters,
@@ -1446,8 +1479,8 @@ function App() {
       }
     }
   }), /*#__PURE__*/React.createElement(ChartCard, {
-    title: rankMode === "best" ? "Produtos mais vendidos" : "Produtos com pior lucro",
-    subtitle: "Ranking por receita ou lucro no per\xEDodo atual",
+    title: rankMode === "best" ? "Produtos mais vendidos" : "Produtos com menor faturamento",
+    subtitle: "Ranking por receita no per\xEDodo atual",
     type: "bar",
     data: productChartData,
     options: horizontalCurrencyOptions(),
