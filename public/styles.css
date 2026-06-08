@@ -887,6 +887,60 @@ body.pdf-export-mode .pdf-skip {
   display: none;
 }
 
+body.pdf-export-mode .topbar {
+  position: static;
+}
+
+body.pdf-export-mode .topbar-inner,
+body.pdf-export-mode .main-grid {
+  width: min(1120px, calc(100vw - 24px));
+}
+
+body.pdf-export-mode .main-grid {
+  display: block;
+}
+
+body.pdf-export-mode .content-area {
+  display: block;
+}
+
+body.pdf-export-mode .section {
+  margin-bottom: 16px;
+}
+
+body.pdf-export-mode .chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+body.pdf-export-mode .chart-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 360px;
+}
+
+body.pdf-export-mode .chart-card.wide {
+  grid-column: 1 / -1;
+  min-height: 400px;
+}
+
+body.pdf-export-mode .chart-wrap {
+  height: 292px;
+}
+
+body.pdf-export-mode .chart-card.wide .chart-wrap {
+  height: 324px;
+}
+
+body.pdf-export-mode .table-grid {
+  grid-template-columns: 1fr;
+}
+
+body.pdf-export-mode .platform-performance-card {
+  grid-column: 1 / -1;
+}
+
 @page {
   size: A4 landscape;
   margin: 8mm;
@@ -991,21 +1045,21 @@ body.pdf-export-mode .pdf-skip {
   .chart-card {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
-    min-height: 84mm;
+    min-height: 86mm;
     padding: 3.5mm;
   }
 
   .chart-card.wide {
     grid-column: 1 / -1;
-    min-height: 92mm;
+    min-height: 94mm;
   }
 
   .chart-wrap {
-    height: 62mm;
+    height: 64mm;
   }
 
   .chart-card.wide .chart-wrap {
-    height: 70mm;
+    height: 72mm;
   }
 
   .chart-wrap.short {
@@ -1029,9 +1083,13 @@ body.pdf-export-mode .pdf-skip {
   }
 
   .table-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 4mm;
     margin-top: 5mm;
+  }
+
+  .platform-performance-card {
+    grid-column: 1 / -1;
   }
 
   .heatmap-card {
@@ -1132,12 +1190,19 @@ body.pdf-export-mode .pdf-skip {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 
-  .chart-grid,
-  .table-grid {
+  .chart-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
+  .table-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   .chart-card.wide {
+    grid-column: 1 / -1 !important;
+  }
+
+  .platform-performance-card {
     grid-column: 1 / -1 !important;
   }
 

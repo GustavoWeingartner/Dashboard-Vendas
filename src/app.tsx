@@ -1333,12 +1333,32 @@ function App() {
 
   function handleExportPdf() {
     document.body.classList.add("pdf-export-mode");
-    const cleanup = () => document.body.classList.remove("pdf-export-mode");
+    const resizeCharts = () => {
+      const charts = Array.from((window as any).__DASHBOARD_CHARTS__ || []);
+      charts.forEach((chart: any) => {
+        try {
+          chart.resize();
+          chart.update("none");
+        } catch {
+          // A chart can be destroyed during data refresh; ignore it for print.
+        }
+      });
+    };
+    const cleanup = () => {
+      document.body.classList.remove("pdf-export-mode");
+      window.removeEventListener("beforeprint", resizeCharts);
+      window.setTimeout(resizeCharts, 100);
+    };
+    window.addEventListener("beforeprint", resizeCharts);
     window.addEventListener("afterprint", cleanup, { once: true });
     window.setTimeout(() => {
-      window.print();
-      window.setTimeout(cleanup, 1200);
-    }, 50);
+      resizeCharts();
+      window.setTimeout(() => {
+        resizeCharts();
+        window.print();
+        window.setTimeout(cleanup, 1200);
+      }, 350);
+    }, 80);
   }
 
   useEffect(() => {
@@ -2238,8 +2258,11 @@ function ChartCanvas({ type, data, options }: { type: string; data: any; options
       data,
       options,
     });
+    const chartRegistry = ((window as any).__DASHBOARD_CHARTS__ ||= new Set());
+    chartRegistry.add(chartRef.current);
     return () => {
       if (chartRef.current) {
+        chartRegistry.delete(chartRef.current);
         chartRef.current.destroy();
         chartRef.current = null;
       }
@@ -2324,7 +2347,7 @@ function ProductRankingTable({
   setRankMode: (value: "best" | "worst") => void;
 }) {
   return (
-    <div className="table-card">
+    <div className="table-card product-ranking-card pdf-skip">
       <div className="table-head">
         <h3 className="table-title">Ranking de produtos</h3>
         <RankToggle value={rankMode} onChange={setRankMode} />
@@ -2364,7 +2387,7 @@ function ProductRankingTable({
 
 function PlatformPerformanceTable({ rows }: { rows: any[] }) {
   return (
-    <div className="table-card">
+    <div className="table-card platform-performance-card">
       <div className="table-head">
         <h3 className="table-title">Performance por plataforma</h3>
       </div>

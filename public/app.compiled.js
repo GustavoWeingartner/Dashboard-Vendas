@@ -1134,14 +1134,34 @@ function App() {
   }
   function handleExportPdf() {
     document.body.classList.add("pdf-export-mode");
-    const cleanup = () => document.body.classList.remove("pdf-export-mode");
+    const resizeCharts = () => {
+      const charts = Array.from(window.__DASHBOARD_CHARTS__ || []);
+      charts.forEach(chart => {
+        try {
+          chart.resize();
+          chart.update("none");
+        } catch {
+          // A chart can be destroyed during data refresh; ignore it for print.
+        }
+      });
+    };
+    const cleanup = () => {
+      document.body.classList.remove("pdf-export-mode");
+      window.removeEventListener("beforeprint", resizeCharts);
+      window.setTimeout(resizeCharts, 100);
+    };
+    window.addEventListener("beforeprint", resizeCharts);
     window.addEventListener("afterprint", cleanup, {
       once: true
     });
     window.setTimeout(() => {
-      window.print();
-      window.setTimeout(cleanup, 1200);
-    }, 50);
+      resizeCharts();
+      window.setTimeout(() => {
+        resizeCharts();
+        window.print();
+        window.setTimeout(cleanup, 1200);
+      }, 350);
+    }, 80);
   }
   useEffect(() => {
     if (dataSourceMode === "upload") return undefined;
@@ -2073,8 +2093,11 @@ function ChartCanvas({
       data,
       options
     });
+    const chartRegistry = window.__DASHBOARD_CHARTS__ ||= new Set();
+    chartRegistry.add(chartRef.current);
     return () => {
       if (chartRef.current) {
+        chartRegistry.delete(chartRef.current);
         chartRef.current.destroy();
         chartRef.current = null;
       }
@@ -2154,7 +2177,7 @@ function ProductRankingTable({
   setRankMode
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: "table-card"
+    className: "table-card product-ranking-card pdf-skip"
   }, /*#__PURE__*/React.createElement("div", {
     className: "table-head"
   }, /*#__PURE__*/React.createElement("h3", {
@@ -2182,7 +2205,7 @@ function PlatformPerformanceTable({
   rows
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: "table-card"
+    className: "table-card platform-performance-card"
   }, /*#__PURE__*/React.createElement("div", {
     className: "table-head"
   }, /*#__PURE__*/React.createElement("h3", {
