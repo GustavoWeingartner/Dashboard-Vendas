@@ -1420,9 +1420,7 @@ function App() {
     className: "section-header"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
     className: "section-title"
-  }, "Resumo executivo"), /*#__PURE__*/React.createElement("p", {
-    className: "section-subtitle"
-  }, "Per\xEDodo atual: ", periodLabel, " \xB7 Comparativo: ", previousLabel)), /*#__PURE__*/React.createElement(GranularitySelector, {
+  }, "Resumo executivo")), /*#__PURE__*/React.createElement(GranularitySelector, {
     value: granularity,
     onChange: setGranularity
   })), /*#__PURE__*/React.createElement("div", {
@@ -1455,25 +1453,21 @@ function App() {
     className: "chart-grid"
   }, /*#__PURE__*/React.createElement(ChartCard, {
     title: "Receita ao longo do tempo",
-    subtitle: "Atual versus per\xEDodo anterior de mesma dura\xE7\xE3o",
     type: "line",
     data: lineChartData,
     options: chartOptions(compactCurrency)
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Faturamento x unidades",
-    subtitle: "Receita e volume agrupados pelo per\xEDodo selecionado",
     type: "bar",
     data: ordersChartData,
     options: dualAxisOptions()
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Vendas por plataforma",
-    subtitle: "Top marketplaces e canais por receita",
     type: "bar",
     data: platformChartData,
     options: horizontalCurrencyOptions()
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Vendas por categoria",
-    subtitle: "Categoria expl\xEDcita ou derivada do produto/SKU",
     type: "doughnut",
     data: categoryChartData,
     options: {
@@ -1497,7 +1491,6 @@ function App() {
     }
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: rankMode === "best" ? "Produtos mais vendidos" : "Produtos com menor faturamento",
-    subtitle: "Ranking por receita no per\xEDodo atual",
     type: "bar",
     data: productChartData,
     options: horizontalCurrencyOptions(),
@@ -1508,26 +1501,22 @@ function App() {
     pdfHidden: true
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Receita por canal",
-    subtitle: "Distribui\xE7\xE3o de faturamento por origem da venda",
     type: "bar",
     data: channelChartData,
     options: horizontalCurrencyOptions()
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Faturamento mensal do ano",
-    subtitle: "Receita total por m\xEAs, respeitando os filtros de plataforma, produto e canal",
     type: "bar",
     data: monthlyChartData,
     options: monthlyRevenueOptions(monthlyMaxRevenue),
     wide: true
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Comparativo semanal",
-    subtitle: "Receita por semana ISO",
     type: "line",
     data: weeklyChartData,
     options: chartOptions(compactCurrency)
   }), /*#__PURE__*/React.createElement(ChartCard, {
     title: "Receita x pedidos",
-    subtitle: "Cada ponto representa um dia de venda",
     type: "scatter",
     data: scatterData,
     options: scatterOptions()
@@ -1535,7 +1524,6 @@ function App() {
     className: "section"
   }, /*#__PURE__*/React.createElement(ChartCard, {
     title: "Tend\xEAncia di\xE1ria de vendas",
-    subtitle: "Receita di\xE1ria dentro do per\xEDodo filtrado",
     type: "line",
     data: dailyTrendData,
     options: chartOptions(compactCurrency),
@@ -1677,9 +1665,7 @@ function FiltersPanel({
     className: "panel-header"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "panel-title"
-  }, "Filtros"), /*#__PURE__*/React.createElement("p", {
-    className: "panel-subtitle"
-  }, "A sele\xE7\xE3o atual recalcula KPIs, gr\xE1ficos e tabelas em tempo real.")), /*#__PURE__*/React.createElement("div", {
+  }, "Filtros")), /*#__PURE__*/React.createElement("div", {
     className: "filters-body"
   }, /*#__PURE__*/React.createElement("div", {
     className: "field"
@@ -1970,9 +1956,7 @@ function DateComparisonSelector({
     className: "section-header"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
     className: "section-title"
-  }, "Compara\xE7\xE3o personalizada"), /*#__PURE__*/React.createElement("p", {
-    className: "section-subtitle"
-  }, "Per\xEDodo A contra per\xEDodo B, mantendo os demais filtros ativos."))), /*#__PURE__*/React.createElement("div", {
+  }, "Compara\xE7\xE3o personalizada"))), /*#__PURE__*/React.createElement("div", {
     className: "comparison-controls"
   }, /*#__PURE__*/React.createElement("div", {
     className: "field"
@@ -2047,7 +2031,6 @@ function RankToggle({
 }
 function ChartCard({
   title,
-  subtitle,
   type,
   data,
   options,
@@ -2062,9 +2045,7 @@ function ChartCard({
     className: "chart-title-row"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "chart-title"
-  }, title), /*#__PURE__*/React.createElement("p", {
-    className: "chart-subtitle"
-  }, subtitle)), action), /*#__PURE__*/React.createElement("div", {
+  }, title)), action), /*#__PURE__*/React.createElement("div", {
     className: `chart-wrap ${short ? "short" : ""}`
   }, /*#__PURE__*/React.createElement(ChartCanvas, {
     type: type,
@@ -2144,9 +2125,7 @@ function SalesHeatmap({
     className: "chart-title-row"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
     className: "chart-title"
-  }, "Heatmap de melhores dias"), /*#__PURE__*/React.createElement("p", {
-    className: "chart-subtitle"
-  }, "Intensidade por receita di\xE1ria no per\xEDodo filtrado"))), /*#__PURE__*/React.createElement("div", {
+  }, "Heatmap de melhores dias"))), /*#__PURE__*/React.createElement("div", {
     className: "heatmap-grid"
   }, dayLabels.map(label => /*#__PURE__*/React.createElement("div", {
     className: "heatmap-day-label",

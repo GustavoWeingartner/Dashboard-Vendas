@@ -1653,7 +1653,6 @@ function App() {
                 <div className="section-header">
                   <div>
                     <h2 className="section-title">Resumo executivo</h2>
-                    <p className="section-subtitle">Período atual: {periodLabel} · Comparativo: {previousLabel}</p>
                   </div>
                   <GranularitySelector value={granularity} onChange={setGranularity} />
                 </div>
@@ -1675,28 +1674,24 @@ function App() {
               <section className="chart-grid">
                 <ChartCard
                   title="Receita ao longo do tempo"
-                  subtitle="Atual versus período anterior de mesma duração"
                   type="line"
                   data={lineChartData}
                   options={chartOptions(compactCurrency)}
                 />
                 <ChartCard
                   title="Faturamento x unidades"
-                  subtitle="Receita e volume agrupados pelo período selecionado"
                   type="bar"
                   data={ordersChartData}
                   options={dualAxisOptions()}
                 />
                 <ChartCard
                   title="Vendas por plataforma"
-                  subtitle="Top marketplaces e canais por receita"
                   type="bar"
                   data={platformChartData}
                   options={horizontalCurrencyOptions()}
                 />
                 <ChartCard
                   title="Vendas por categoria"
-                  subtitle="Categoria explícita ou derivada do produto/SKU"
                   type="doughnut"
                   data={categoryChartData}
                   options={{
@@ -1710,7 +1705,6 @@ function App() {
                 />
                 <ChartCard
                   title={rankMode === "best" ? "Produtos mais vendidos" : "Produtos com menor faturamento"}
-                  subtitle="Ranking por receita no período atual"
                   type="bar"
                   data={productChartData}
                   options={horizontalCurrencyOptions()}
@@ -1719,14 +1713,12 @@ function App() {
                 />
                 <ChartCard
                   title="Receita por canal"
-                  subtitle="Distribuição de faturamento por origem da venda"
                   type="bar"
                   data={channelChartData}
                   options={horizontalCurrencyOptions()}
                 />
                 <ChartCard
                   title="Faturamento mensal do ano"
-                  subtitle="Receita total por mês, respeitando os filtros de plataforma, produto e canal"
                   type="bar"
                   data={monthlyChartData}
                   options={monthlyRevenueOptions(monthlyMaxRevenue)}
@@ -1734,14 +1726,12 @@ function App() {
                 />
                 <ChartCard
                   title="Comparativo semanal"
-                  subtitle="Receita por semana ISO"
                   type="line"
                   data={weeklyChartData}
                   options={chartOptions(compactCurrency)}
                 />
                 <ChartCard
                   title="Receita x pedidos"
-                  subtitle="Cada ponto representa um dia de venda"
                   type="scatter"
                   data={scatterData}
                   options={scatterOptions()}
@@ -1751,7 +1741,6 @@ function App() {
               <section className="section">
                 <ChartCard
                   title="Tendência diária de vendas"
-                  subtitle="Receita diária dentro do período filtrado"
                   type="line"
                   data={dailyTrendData}
                   options={chartOptions(compactCurrency)}
@@ -1868,7 +1857,6 @@ function FiltersPanel({
     <aside className="filters-panel">
       <div className="panel-header">
         <h2 className="panel-title">Filtros</h2>
-        <p className="panel-subtitle">A seleção atual recalcula KPIs, gráficos e tabelas em tempo real.</p>
       </div>
       <div className="filters-body">
         <div className="field">
@@ -2146,7 +2134,6 @@ function DateComparisonSelector({
       <div className="section-header">
         <div>
           <h2 className="section-title">Comparação personalizada</h2>
-          <p className="section-subtitle">Período A contra período B, mantendo os demais filtros ativos.</p>
         </div>
       </div>
       <div className="comparison-controls">
@@ -2209,7 +2196,6 @@ function RankToggle({ value, onChange }: { value: string; onChange: (value: "bes
 
 function ChartCard({
   title,
-  subtitle,
   type,
   data,
   options,
@@ -2219,7 +2205,6 @@ function ChartCard({
   pdfHidden = false,
 }: {
   title: string;
-  subtitle: string;
   type: string;
   data: any;
   options: any;
@@ -2233,7 +2218,6 @@ function ChartCard({
       <div className="chart-title-row">
         <div>
           <h3 className="chart-title">{title}</h3>
-          <p className="chart-subtitle">{subtitle}</p>
         </div>
         {action}
       </div>
@@ -2307,7 +2291,6 @@ function SalesHeatmap({ records }: { records: SaleRecord[] }) {
       <div className="chart-title-row">
         <div>
           <h3 className="chart-title">Heatmap de melhores dias</h3>
-          <p className="chart-subtitle">Intensidade por receita diária no período filtrado</p>
         </div>
       </div>
       <div className="heatmap-grid">
