@@ -454,6 +454,7 @@ function deriveCategory(productValue: string, skuValue: string, itemValue: strin
   if (product.includes("cartao") || sku.includes("ct")) return "Cartões TAG";
   if (product.includes("term")) return "Terminais";
   if (sku.startsWith("tk") || sku.startsWith("tp")) return "Acessórios";
+  if (/^(k|p|pv)\d+/.test(sku) || /^(k|p|pv)\d+/.test(item)) return "Fechaduras";
   if (item.includes("he")) return "Terminais";
   if (item.includes("sh") || item.includes("ush")) return "Acessórios";
   if (item.includes("sl") || item.includes("usl")) return "Fechaduras";

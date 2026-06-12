@@ -121,17 +121,17 @@ button {
 .brand-logo {
   display: block;
   max-width: 100%;
+  width: auto;
+  height: 42px;
   object-fit: contain;
 }
 
 .kuanttum-logo {
-  width: min(220px, 42vw);
-  max-height: 42px;
+  max-width: min(220px, 42vw);
 }
 
 .primebras-logo {
-  width: min(260px, 42vw);
-  max-height: 48px;
+  max-width: min(220px, 42vw);
   border-radius: 4px;
 }
 
